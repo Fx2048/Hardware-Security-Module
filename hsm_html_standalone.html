@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSM Simulator - Hardware Security Module</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #2563eb 0%, #06b6d4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header p {
+            color: #bfdbfe;
+            font-size: 1.1em;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-loaded {
+            background: #10b981;
+        }
+
+        .status-unloaded {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .notification {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+        }
+
+        .notification.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+        }
+
+        .notification.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        .tab.active {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-bottom-color: #06b6d4;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #06b6d4;
+        }
+
+        .card h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #06b6d4;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #06b6d4 0%, #2563eb 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            color: #fff;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+            color: #fff;
+        }
+
+        .btn-warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+            color: #fff;
+        }
+
+        .custodian-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .custodian-box h4 {
+            color: #06b6d4;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .code-box {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+
+        .code-box.green {
+            color: #10b981;
+        }
+
+        .code-box.cyan {
+            color: #06b6d4;
+        }
+
+        .key-item {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .key-info {
+            flex: 1;
+        }
+
+        .key-id {
+            font-family: 'Courier New', monospace;
+            color: #06b6d4;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .key-details {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .audit-entry {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+
+        .audit-entry.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+        }
+
+        .audit-entry.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+
+        .audit-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .audit-operation {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .audit-time {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9em;
+        }
+
+        .audit-details {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95em;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .flex-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .warning-box p {
+            margin: 5px 0;
+        }
+
+        .custodian-input-box {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .custodian-input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-loaded-badge {
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        #auditLogContainer {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        #auditLogContainer::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #auditLogContainer::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        #auditLogContainer::-webkit-scrollbar-thumb {
+            background: rgba(6, 182, 212, 0.5);
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg class="icon" style="width: 40px; height: 40px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                HSM Simulator
+            </h1>
+            <p>Hardware Security Module - Sistema de Gestión de Claves Maestras</p>
+            <div class="status-badge">
+                <div id="statusIndicator" class="status-indicator status-unloaded"></div>
+                <span id="statusText">Master Key No Cargada</span>
+            </div>
+        </div>
+
+        <div id="notificationArea"></div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('setup')">🔒 Configuración</button>
+            <button class="tab" onclick="switchTab('keys')">🔑 Claves</button>
+            <button class="tab" onclick="switchTab('encrypt')">📤 Encriptar</button>
+            <button class="tab" onclick="switchTab('decrypt')">📥 Desencriptar</button>
+            <button class="tab" onclick="switchTab('audit')">📋 Auditoría</button>
+        </div>
+
+        <!-- Tab: Setup -->
+        <div id="setupTab" class="tab-content active">
+            <div class="card">
+                <h2>Generación de Master Key</h2>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+                    Genera una master key de 256 bits y divídela en 3 componentes de custodios usando un esquema XOR.
+                </p>
+                <button class="btn btn-primary" onclick="generateMasterKey()">
+                    Generar Master Key y Dividir
+                </button>
+            </div>
+
+            <div id="custodianComponentsCard" style="display: none;">
+                <div class="card">
+                    <h3>Componentes de Custodios Generados</h3>
+                    <div class="warning-box">
+                        <p><strong>⚠️ IMPORTANTE:</strong> Guarde estos componentes de forma segura.</p>
+                        <p>Cada custodio debe mantener su componente en secreto.</p>
+                    </div>
+                    <div id="custodianComponents"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Carga de Componentes de Custodios</h3>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px;">
+                    Los 3 custodios deben proporcionar sus componentes para reconstruir la master key.
+                </p>
+                <div id="custodianInputs">
+                    <div class="custodian-input-box" id="custodian0">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 1</h4>
+                            <span class="status-loaded-badge" id="status0" style="display: none;">
+                                ✓ Cargado
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component0" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash0" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(0)">Cargar Componente</button>
+                    </div>
+
+                    <div class="custodian-input-box" id="custodian1">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 2</h4>
+                            <span class="status-loaded-badge" id="status1" style="display: none;">
+                                ✓ Cargado
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component1" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash1" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(1)">Cargar Componente</button>
+                    </div>
+
+                    <div class="custodian-input-box" id="custodian2">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 3</h4>
+                            <span class="status-loaded-badge" id="status2" style="display: none;">
+                                ✓ Cargado
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component2" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash2" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(2)">Cargar Componente</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Keys -->
+        <div id="keysTab" class="tab-content">
+            <div class="card">
+                <h2>Generar Clave de Trabajo</h2>
+                <div class="form-group">
+                    <label>ID de la Clave:</label>
+                    <input type="text" id="newKeyId" placeholder="Ej: DATA-KEY-001">
+                </div>
+                <button class="btn btn-success" onclick="generateWorkingKey()">Generar Clave</button>
+            </div>
+
+            <div class="card">
+                <h3>Claves de Trabajo (<span id="keyCount">0</span>)</h3>
+                <div id="workingKeysContainer"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Encrypt -->
+        <div id="encryptTab" class="tab-content">
+            <div class="card">
+                <h2>Encriptar Datos</h2>
+                <div class="form-group">
+                    <label>Seleccionar Clave:</label>
+                    <select id="encryptKeySelect">
+                        <option value="">-- Seleccione una clave --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Datos a Encriptar:</label>
+                    <textarea id="plaintextInput" placeholder="Ingrese el texto que desea encriptar..."></textarea>
+                </div>
+                <button class="btn btn-warning" onclick="encryptData()">Encriptar Datos</button>
+            </div>
+
+            <div id="encryptedResultCard" style="display: none;">
+                <div class="card">
+                    <h3>Resultado Encriptado</h3>
+                    <div class="code-box green" id="encryptedOutput"></div>
+                    <button class="btn btn-primary btn-sm" onclick="copyToClipboard('encryptedOutput')">
+                        Copiar al Portapapeles
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Decrypt -->
+        <div id="decryptTab" class="tab-content">
+            <div class="card">
+                <h2>Desencriptar Datos</h2>
+                <div class="form-group">
+                    <label>Datos Encriptados (JSON):</label>
+                    <textarea id="encryptedInput" placeholder="Pegue el JSON con los datos encriptados aquí..."></textarea>
+                </div>
+                <button class="btn btn-danger" onclick="decryptData()">Desencriptar Datos</button>
+            </div>
+
+            <div id="decryptedResultCard" style="display: none;">
+                <div class="card">
+                    <h3>Resultado Desencriptado</h3>
+                    <div class="code-box cyan" id="decryptedOutput"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Audit -->
+        <div id="auditTab" class="tab-content">
+            <div class="card">
+                <h2>Registro de Auditoría</h2>
+                <div id="auditLogContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado global del HSM
+        const hsmState = {
+            masterKeyLoaded: false,
+            custodianComponents: [],
+            loadedComponents: [null, null, null],
+            workingKeys: [],
+            auditLog: [],
+            masterKey: null
+        };
+
+        // Utilidades Criptográficas
+        const crypto_utils = {
+            randomBytes: (length) => {
+                const array = new Uint8Array(length);
+                crypto.getRandomValues(array);
+                return array;
+            },
+
+            xor: (a, b) => {
+                const result = new Uint8Array(a.length);
+                for (let i = 0; i < a.length; i++) {
+                    result[i] = a[i] ^ b[i];
+                }
+                return result;
+            },
+
+            sha256: async (data) => {
+                const buffer = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+                const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+                return Array.from(new Uint8Array(hashBuffer))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+            },
+
+            toHex: (bytes) => {
+                return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+
+            fromHex: (hex) => {
+                const bytes = new Uint8Array(hex.length / 2);
+                for (let i = 0; i < hex.length; i += 2) {
+                    bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+                }
+                return bytes;
+            },
+
+            toBase64: (bytes) => {
+                return btoa(String.fromCharCode.apply(null, bytes));
+            },
+
+            fromBase64: (base64) => {
+                return new Uint8Array(atob(base64).split('').map(c => c.charCodeAt(0)));
+            }
+        };
+
+        // AES-GCM
+        const aes_gcm = {
+            encrypt: async (data, key) => {
+                const iv = crypto_utils.randomBytes(12);
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw', key, { name: 'AES-GCM' }, false, ['encrypt']
+                );
+
+                const dataBytes = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+                const encrypted = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv }, cryptoKey, dataBytes
+                );
+
+                return {
+                    ciphertext: new Uint8Array(encrypted),
+                    iv,
+                    tag: new Uint8Array(encrypted.slice(-16))
+                };
+            },
+
+            decrypt: async (ciphertext, key, iv) => {
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw', key, { name: 'AES-GCM' }, false, ['decrypt']
+                );
+
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv }, cryptoKey, ciphertext
+                );
+
+                return new Uint8Array(decrypted);
+            }
+        };
+
+        // UI Functions
+        function showNotification(message, type = 'info') {
+            const notificationArea = document.getElementById('notificationArea');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <span>${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span>
+                <span>${message}</span>
+            `;
+            notificationArea.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        function addAuditLog(operation, details, success = true) {
+            const entry = {
+                timestamp: new Date().toISOString(),
+                operation,
+                details,
+                success
+            };
+            hsmState.auditLog.unshift(entry);
+            updateAuditLog();
+        }
+
+        function updateAuditLog() {
+            const container = document.getElementById('auditLogContainer');
+            
+            if (hsmState.auditLog.length === 0) {
+                container.innerHTML = '<div class="empty-state">No hay operaciones registradas aún</div>';
+                return;
+            }
+
+            container.innerHTML = hsmState.auditLog.map(entry => `
+                <div class="audit-entry ${entry.success ? 'success' : 'error'}">
+                    <div class="audit-header">
+                        <span class="audit-operation">${entry.operation}</span>
+                        <span class="audit-time">${new Date(entry.timestamp).toLocaleString()}</span>
+                    </div>
+                    <div class="audit-details">${entry.details}</div>
+                </div>
+            `).join('');
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function updateStatus() {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+
+            if (hsmState.masterKeyLoaded) {
+                indicator.className = 'status-indicator status-loaded';
+                text.textContent = 'Master Key Cargada';
+            } else {
+                indicator.className = 'status-indicator status-unloaded';
+                text.textContent = 'Master Key No Cargada';
+            }
+        }
+
+        // Master Key Functions
+        async function generateMasterKey() {
+            try {
+                const c1 = crypto_utils.randomBytes(32);
+                const c2 = crypto_utils.randomBytes(32);
+                const c3 = crypto_utils.randomBytes(32);
+
+                const components = [];
+                for (let i = 0; i < 3; i++) {
+                    const component = i === 0 ? c1 : i === 1 ? c2 : c3;
+                    const hash = await crypto_utils.sha256(component);
+                    components.push({
+                        id: `CUSTODIAN-${i + 1}`,
+                        component: crypto_utils.toHex(component),
+                        hash: hash
+                    });
+                }
+
+                hsmState.custodianComponents = components;
+                hsmState.loadedComponents = [null, null, null];
+                hsmState.masterKeyLoaded = false;
+
+                displayCustodianComponents(components);
+                addAuditLog('Generación de Master Key', 'Master key dividida en 3 componentes de custodios');
+                showNotification('Master key generada y dividida exitosamente', 'success');
+            } catch (error) {
+                showNotification('Error al generar master key: ' + error.message, 'error');
+            }
+        }
+
+        function displayCustodianComponents(components) {
+            const card = document.getElementById('custodianComponentsCard');
+            const container = document.getElementById('custodianComponents');
+
+            container.innerHTML = components.map((comp, index) => `
+                <div class="custodian-box">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h4>${comp.id}</h4>
+                        <button class="btn btn-primary btn-sm" onclick="exportComponent(${index})">
+                            💾 Exportar
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label>Componente (Hex):</label>
+                        <div class="code-box green">${comp.component}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Hash de Verificación (SHA-256):</label>
+                        <div class="code-box cyan">${comp.hash}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            card.style.display = 'block';
+        }
+
+        function exportComponent(index) {
+            const comp = hsmState.custodianComponents[index];
+            const dataStr = JSON.stringify(comp, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${comp.id}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification(`Componente ${comp.id} exportado`, 'success');
+        }
+
+        async function loadCustodian(index) {
+            try {
+                const component = document.getElementById(`component${index}`).value.trim();
+                const hash = document.getElementById(`hash${index}`).value.trim();
+
+                if (!component || !hash) {
+                    showNotification('Por favor ingrese el componente y el hash', 'error');
+                    return;
+                }
+
+                const componentBytes = crypto_utils.fromHex(component);
+                const computedHash = await crypto_utils.sha256(componentBytes);
+
+                if (computedHash !== hash) {
+                    addAuditLog(`Carga Custodio ${index + 1}`, 'Verificación de hash falló', false);
+                    showNotification(`Verificación de hash falló para Custodio ${index + 1}`, 'error');
+                    return;
+                }
+
+                hsmState.loadedComponents[index] = component;
+                document.getElementById(`status${index}`).style.display = 'block';
+                addAuditLog(`Carga Custodio ${index + 1}`, 'Componente cargado exitosamente');
+                showNotification(`Custodio ${index + 1} cargado exitosamente`, 'success');
+
+                if (hsmState.loadedComponents.every(c => c !== null)) {
+                    await reconstructMasterKey(hsmState.loadedComponents);
+                }
+            } catch (error) {
+                showNotification('Error al cargar custodio: ' + error.message, 'error');
+            }
+        }
+
+        async function reconstructMasterKey(components) {
+            try {
+                const c1 = crypto_utils.fromHex(components[0]);
+                const c2 = crypto_utils.fromHex(components[1]);
+                const c3 = crypto_utils.fromHex(components[2]);
+
+                const masterKey = crypto_utils.xor(crypto_utils.xor(c1, c2), c3);
+
+                hsmState.masterKey = masterKey;
+                hsmState.masterKeyLoaded = true;
+
+                updateStatus();
+                addAuditLog('Reconstrucción de Master Key', 'Master key reconstruida desde componentes de custodios');
+                showNotification('¡Master key cargada exitosamente! HSM operacional', 'success');
+            } catch (error) {
+                showNotification('Error al reconstruir master key: ' + error.message, 'error');
+            }
+        }
+
+        // Working Key Functions
+        async function generateWorkingKey() {
+            if (!hsmState.masterKeyLoaded) {
+                showNotification('Debe cargar la master key primero', 'error');
+                return;
+            }
+
+            const keyId = document.getElementById('newKeyId').value.trim();
+
+            if (!keyId) {
+                showNotification('Por favor ingrese un ID de clave', 'error');
+                return;
+            }
+
+            if (hsmState.workingKeys.some(k => k.keyId === keyId)) {
+                showNotification('El ID de clave ya existe', 'error');
+                return;
+            }
+
+            try {
+                const workingKey = crypto_utils.randomBytes(32);
+                const encrypted = await aes_gcm.encrypt(workingKey, hsmState.masterKey);
+
+                const keyData = {
+                    keyId,
+                    algorithm: 'AES-256',
+                    encryptedKey: crypto_utils.toBase64(encrypted.ciphertext),
+                    iv: crypto_utils.toBase64(encrypted.iv),
+                    createdAt: new Date().toISOString()
+                };
+
+                hsmState.workingKeys.push(keyData);
+                updateWorkingKeysList();
+                updateKeySelects();
+
+                addAuditLog('Generación de Clave de Trabajo', `Clave ${keyId} generada con AES-256`);
+                showNotification(`Clave de trabajo ${keyId} generada exitosamente`, 'success');
+
+                document.getElementById('newKeyId').value = '';
+            } catch (error) {
+                showNotification('Error al generar clave de trabajo: ' + error.message, 'error');
+            }
+        }
+
+        function updateWorkingKeysList() {
+            const container = document.getElementById('workingKeysContainer');
+            document.getElementById('keyCount').textContent = hsmState.workingKeys.length;
+
+            if (hsmState.workingKeys.length === 0) {
+                container.innerHTML = '<div class="empty-state">No hay claves de trabajo generadas aún</div>';
+                return;
+            }
+
+            container.innerHTML = hsmState.workingKeys.map(key => `
+                <div class="key-item">
+                    <div class="key-info">
+                        <div class="key-id">${key.keyId}</div>
+                        <div class="key-details">${key.algorithm} • ${new Date(key.createdAt).toLocaleString()}</div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="deleteWorkingKey('${key.keyId}')">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function deleteWorkingKey(keyId) {
+            hsmState.workingKeys = hsmState.workingKeys.filter(k => k.keyId !== keyId);
+            updateWorkingKeysList();
+            updateKeySelects();
+            addAuditLog('Eliminación de Clave de Trabajo', `Clave ${keyId} eliminada`);
+            showNotification(`Clave ${keyId} eliminada`, 'info');
+        }
+
+        function updateKeySelects() {
+            const encryptSelect = document.getElementById('encryptKeySelect');
+            
+            encryptSelect.innerHTML = '<option value="">-- Seleccione una clave --</option>' +
+                hsmState.workingKeys.map(key => 
+                    `<option value="${key.keyId}">${key.keyId}</option>`
+                ).join('');
+        }
+
+        // Encryption Functions
+        async function encryptData() {
+            if (!hsmState.masterKeyLoaded) {
+                showNotification('Debe cargar la master key primero', 'error');
+                return;
+            }
+
+            const keyId = document.getElementById('encryptKeySelect').value;
+            const plaintext = document.getElementById('plaintextInput').value;
+
+            if (!keyId) {
+                showNotification('Por favor seleccione una clave de trabajo', 'error');
+                return;
+            }
+
+            if (!plaintext) {
+                showNotification('Por favor ingrese datos para encriptar', 'error');
+                return;
+            }
+
+            try {
+                const keyData = hsmState.workingKeys.find(k => k.keyId === keyId);
+                if (!keyData) {
+                    showNotification('Clave seleccionada no encontrada', 'error');
+                    return;
+                }
+
+                const encryptedKeyBytes = crypto_utils.fromBase64(keyData.encryptedKey);
+                const iv = crypto_utils.fromBase64(keyData.iv);
+                const workingKey = await aes_gcm.decrypt(encryptedKeyBytes, hsmState.masterKey, iv);
+
+                const encrypted = await aes_gcm.encrypt(plaintext, workingKey);
+
+                const result = {
+                    keyId: keyId,
+                    ciphertext: crypto_utils.toBase64(encrypted.ciphertext),
+                    iv: crypto_utils.toBase64(encrypted.iv),
+                    algorithm: 'AES-256-GCM',
+                    timestamp: new Date().toISOString()
+                };
+
+                document.getElementById('encryptedOutput').textContent = JSON.stringify(result, null, 2);
+                document.getElementById('encryptedResultCard').style.display = 'block';
+
+                addAuditLog('Encriptación de Datos', `Datos encriptados con clave ${keyId}`, true);
+                showNotification('Datos encriptados exitosamente', 'success');
+            } catch (error) {
+                showNotification('Error al encriptar datos: ' + error.message, 'error');
+            }
+        }
+
+        async function decryptData() {
+            if (!hsmState.masterKeyLoaded) {
+                showNotification('Debe cargar la master key primero', 'error');
+                return;
+            }
+
+            const encryptedInput = document.getElementById('encryptedInput').value;
+
+            if (!encryptedInput) {
+                showNotification('Por favor proporcione datos encriptados', 'error');
+                return;
+            }
+
+            try {
+                const encData = JSON.parse(encryptedInput);
+
+                const keyData = hsmState.workingKeys.find(k => k.keyId === encData.keyId);
+                if (!keyData) {
+                    showNotification('Clave no encontrada para desencriptación', 'error');
+                    return;
+                }
+
+                const encryptedKeyBytes = crypto_utils.fromBase64(keyData.encryptedKey);
+                const keyIv = crypto_utils.fromBase64(keyData.iv);
+                const workingKey = await aes_gcm.decrypt(encryptedKeyBytes, hsmState.masterKey, keyIv);
+
+                const ciphertext = crypto_utils.fromBase64(encData.ciphertext);
+                const iv = crypto_utils.fromBase64(encData.iv);
+
+                const decrypted = await aes_gcm.decrypt(ciphertext, workingKey, iv);
+                const text = new TextDecoder().decode(decrypted);
+
+                document.getElementById('decryptedOutput').textContent = text;
+                document.getElementById('decryptedResultCard').style.display = 'block';
+
+                addAuditLog('Desencriptación de Datos', `Datos desencriptados con clave ${encData.keyId}`, true);
+                showNotification('Datos desencriptados exitosamente', 'success');
+            } catch (error) {
+                addAuditLog('Desencriptación de Datos', 'Desencriptación falló', false);
+                showNotification('Error al desencriptar datos: ' + error.message, 'error');
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copiado al portapapeles', 'success');
+            }).catch(err => {
+                showNotification('Error al copiar: ' + err.message, 'error');
+            });
+        }
+
+        // Initialize
+        updateWorkingKeysList();
+        updateAuditLog();
+        updateStatus();
+    </script>
+</body>
+</html>
