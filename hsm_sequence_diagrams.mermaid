@@ -1,0 +1,132 @@
+sequenceDiagram
+    participant U as Usuario
+    participant UI as Interfaz
+    participant HSM as HSMSimulator
+    participant MKM as MasterKeyManager
+    participant WKS as WorkingKeyStore
+    participant CE as CryptoEngine
+    participant AL as AuditLogger
+
+    Note over U,AL: Flujo 1: Inicialización con Custodios
+
+    U->>UI: Iniciar sistema
+    UI->>HSM: initialize()
+    HSM->>MKM: generateMasterKey()
+    MKM->>MKM: CSPRNG(256 bits)
+    MKM->>MKM: splitMasterKey()
+    Note over MKM: C1 = random(256)<br/>C2 = random(256)<br/>C3 = MK ⊕ C1 ⊕ C2
+    
+    loop Para cada custodio (1-3)
+        MKM->>MKM: hash = SHA256(component)
+        MKM-->>UI: CustodianComponent(id, component, hash)
+        UI-->>U: Mostrar componente y hash
+        U->>U: Guardar componente seguro
+    end
+    
+    HSM->>AL: logOperation("Master Key Generated")
+    HSM->>MKM: clearMasterKey()
+    HSM-->>UI: Sistema inicializado
+    UI-->>U: Confirmación
+
+    Note over U,AL: Flujo 2: Carga de Master Key por Custodios
+
+    U->>UI: Cargar Master Key
+    
+    loop Para cada custodio (1-3)
+        U->>UI: Ingresar componente + hash
+        UI->>HSM: loadCustodianComponent(id, component, hash)
+        HSM->>MKM: validateComponent(component, hash)
+        MKM->>MKM: computeHash = SHA256(component)
+        
+        alt Hash válido
+            MKM->>MKM: storeComponent(component)
+            MKM-->>HSM: Válido
+            HSM->>AL: logCustodianLoad(id, success=true)
+            HSM-->>UI: Componente aceptado
+        else Hash inválido
+            MKM-->>HSM: Inválido
+            HSM->>AL: logCustodianLoad(id, success=false)
+            HSM-->>UI: Error: Hash no coincide
+            UI-->>U: Advertencia de seguridad
+        end
+    end
+    
+    HSM->>MKM: reconstructMasterKey(components)
+    MKM->>MKM: MK = C1 ⊕ C2 ⊕ C3
+    MKM->>MKM: isInitialized = true
+    HSM->>AL: logOperation("Master Key Loaded")
+    HSM-->>UI: Master Key cargada
+    UI-->>U: Sistema listo
+
+    Note over U,AL: Flujo 3: Generación de Clave de Trabajo
+
+    U->>UI: Generar nueva clave
+    UI->>HSM: generateWorkingKey(keyId, algorithm)
+    HSM->>WKS: generateWorkingKey(keyId, AES_256)
+    
+    alt Master Key no cargada
+        WKS-->>HSM: Error: MK no disponible
+        HSM-->>UI: Error
+        UI-->>U: Debe cargar Master Key
+    else Master Key cargada
+        WKS->>WKS: workingKey = CSPRNG(256 bits)
+        WKS->>MKM: getMasterKey()
+        MKM-->>WKS: masterKey
+        WKS->>CE: encrypt(workingKey, masterKey, AES-GCM)
+        CE->>CE: iv = generateIV()
+        CE->>CE: ciphertext, tag = AES_GCM(workingKey, masterKey, iv)
+        CE-->>WKS: EncryptedData
+        WKS->>WKS: storeEncryptedKey(keyId, encryptedData)
+        WKS->>AL: logKeyGeneration(keyId)
+        WKS-->>HSM: keyId
+        HSM-->>UI: Clave generada
+        UI-->>U: Confirmación con keyId
+    end
+
+    Note over U,AL: Flujo 4: Encriptación de Datos
+
+    U->>UI: Encriptar datos
+    UI->>UI: Seleccionar keyId
+    U->>UI: Ingresar datos + seleccionar keyId
+    UI->>HSM: encrypt(data, keyId, mode=GCM)
+    HSM->>CE: encrypt(data, keyId, GCM)
+    CE->>WKS: getWorkingKey(keyId)
+    WKS->>WKS: encryptedKey = retrieve(keyId)
+    WKS->>CE: decrypt(encryptedKey, masterKey)
+    CE-->>WKS: workingKey
+    WKS-->>CE: workingKey
+    
+    CE->>CE: iv = generateIV()
+    CE->>CE: ciphertext, tag = AES_GCM(data, workingKey, iv)
+    CE->>CE: secureDelete(workingKey)
+    CE-->>HSM: EncryptedData(ciphertext, iv, tag, keyId)
+    HSM->>AL: logEncryption(keyId, dataSize)
+    HSM-->>UI: EncryptedData
+    UI-->>U: Datos encriptados
+
+    Note over U,AL: Flujo 5: Desencriptación de Datos
+
+    U->>UI: Desencriptar datos
+    U->>UI: Proporcionar EncryptedData
+    UI->>HSM: decrypt(encryptedData)
+    HSM->>CE: decrypt(encryptedData)
+    CE->>WKS: getWorkingKey(encryptedData.keyId)
+    WKS->>CE: decrypt(encryptedKey, masterKey)
+    CE-->>WKS: workingKey
+    WKS-->>CE: workingKey
+    
+    CE->>CE: validateTag(ciphertext, tag, workingKey)
+    
+    alt Tag válido
+        CE->>CE: plaintext = AES_GCM_decrypt(ciphertext, workingKey, iv)
+        CE->>CE: secureDelete(workingKey)
+        CE-->>HSM: plaintext
+        HSM->>AL: logDecryption(keyId, success=true)
+        HSM-->>UI: plaintext
+        UI-->>U: Datos desencriptados
+    else Tag inválido
+        CE-->>HSM: Error: Autenticación falló
+        HSM->>AL: logDecryption(keyId, success=false)
+        HSM-->>UI: Error de integridad
+        UI-->>U: Advertencia: Datos comprometidos
+    end
