@@ -1,0 +1,136 @@
+classDiagram
+    class HSMSimulator {
+        -MasterKeyManager masterKeyManager
+        -WorkingKeyStore keyStore
+        -CryptoEngine cryptoEngine
+        -AuditLogger auditLogger
+        +initialize()
+        +shutdown()
+        +getStatus() HSMStatus
+    }
+
+    class MasterKeyManager {
+        -byte[] masterKey
+        -bool isInitialized
+        -List~CustodianComponent~ components
+        +generateMasterKey()
+        +splitMasterKey() List~CustodianComponent~
+        +reconstructMasterKey(components) bool
+        +clearMasterKey()
+        +isMasterKeyLoaded() bool
+    }
+
+    class CustodianComponent {
+        -string custodianId
+        -byte[] keyComponent
+        -string verificationHash
+        -DateTime createdAt
+        +validateHash() bool
+        +getHash() string
+    }
+
+    class WorkingKeyStore {
+        -Dictionary~string, EncryptedKey~ keys
+        -MasterKeyManager masterKeyManager
+        +generateWorkingKey(keyId, algorithm) string
+        +getWorkingKey(keyId) byte[]
+        +deleteWorkingKey(keyId) bool
+        +listKeys() List~KeyMetadata~
+        +encryptKey(keyData) EncryptedKey
+        +decryptKey(encryptedKey) byte[]
+    }
+
+    class EncryptedKey {
+        -string keyId
+        -string algorithm
+        -byte[] encryptedData
+        -byte[] iv
+        -byte[] tag
+        -DateTime createdAt
+        -KeyMetadata metadata
+        +toJSON() string
+        +fromJSON(json) EncryptedKey
+    }
+
+    class KeyMetadata {
+        -string keyId
+        -string algorithm
+        -int keyLength
+        -DateTime createdAt
+        -DateTime lastUsed
+        -string purpose
+    }
+
+    class CryptoEngine {
+        -WorkingKeyStore keyStore
+        +encrypt(data, keyId, mode) EncryptedData
+        +decrypt(encryptedData, keyId) byte[]
+        +hash(data, algorithm) string
+        +generateIV() byte[]
+        +validateTag(data, tag) bool
+    }
+
+    class EncryptedData {
+        -byte[] ciphertext
+        -byte[] iv
+        -byte[] tag
+        -string algorithm
+        -string mode
+        -string keyId
+        +toBase64() string
+        +fromBase64(data) EncryptedData
+    }
+
+    class AuditLogger {
+        -List~AuditEntry~ entries
+        -string logFilePath
+        +logOperation(operation, details)
+        +logKeyGeneration(keyId)
+        +logEncryption(keyId, dataSize)
+        +logDecryption(keyId, dataSize)
+        +logCustodianLoad(custodianId)
+        +getAuditTrail() List~AuditEntry~
+        +exportLog(format) string
+    }
+
+    class AuditEntry {
+        -DateTime timestamp
+        -string operation
+        -string details
+        -string userId
+        -bool success
+        +toJSON() string
+    }
+
+    class CryptoAlgorithm {
+        <<enumeration>>
+        AES_256_GCM
+        AES_256_CBC
+        SHA_256
+        SHA_512
+    }
+
+    class HSMStatus {
+        -bool masterKeyLoaded
+        -int workingKeysCount
+        -DateTime lastOperation
+        -string systemHealth
+    }
+
+    HSMSimulator --> MasterKeyManager
+    HSMSimulator --> WorkingKeyStore
+    HSMSimulator --> CryptoEngine
+    HSMSimulator --> AuditLogger
+    
+    MasterKeyManager --> CustodianComponent
+    WorkingKeyStore --> EncryptedKey
+    WorkingKeyStore --> KeyMetadata
+    WorkingKeyStore --> MasterKeyManager
+    
+    CryptoEngine --> EncryptedData
+    CryptoEngine --> WorkingKeyStore
+    CryptoEngine ..> CryptoAlgorithm
+    
+    AuditLogger --> AuditEntry
+    
+    EncryptedKey --> KeyMetadata
