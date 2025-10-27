@@ -1,0 +1,73 @@
+classDiagram
+    class SistemaPrincipal {
+        -List~Custodio~ custodios
+        -HSM hsm
+        -Cifrado cifrado
+        +validarCustodios(llaves: List) bool
+        +ejecutarOperacion(operacion: String, datos: String) String
+        +inicializarSistema()
+        +verificarQuorum() bool
+    }
+    
+    class Custodio {
+        -String id
+        -String nombre
+        -String claveHash
+        -boolean autenticado
+        +validarClave(clave: String) bool
+        +generarHash(clave: String) String
+        +marcarAutenticado()
+    }
+    
+    class HSM {
+        -String masterKey
+        -List~Llave~ llaves
+        -boolean inicializado
+        +encryptKey(datos: String) Llave
+        +decryptKey(llave: Llave) String
+        +generarMasterKey(custodioKeys: List) String
+        +reconstruirMasterKey(shares: List) String
+        +validarIntegridad() bool
+    }
+    
+    class Llave {
+        -String id
+        -String valorEncriptado
+        -String estado
+        -DateTime fechaCreacion
+        -String propietario
+        +cifrar(datos: String, clave: String)
+        +descifrar(clave: String) String
+        +actualizarEstado(nuevoEstado: String)
+        +esValida() bool
+    }
+    
+    class Auditoria {
+        -String id
+        -DateTime fecha
+        -String accion
+        -String usuario
+        -String resultado
+        -String detalles
+        +registrarOperacion(accion: String, usuario: String)
+        +consultarLogs(filtros: Map) List
+        +exportarReporte() String
+    }
+    
+    class Cifrado {
+        <<utility>>
+        +cifrarAES(datos: String, clave: String) String
+        +descifrarAES(datosEncriptados: String, clave: String) String
+        +generarHash(datos: String) String
+        +generarClaveAleatoria() String
+        +validarHash(datos: String, hash: String) bool
+    }
+    
+    SistemaPrincipal "1" --> "3" Custodio : gestiona
+    SistemaPrincipal "1" --> "1" HSM : utiliza
+    SistemaPrincipal "1" --> "1" Cifrado : usa
+    SistemaPrincipal "1" --> "*" Auditoria : registra
+    HSM "1" --> "*" Llave : administra
+    HSM "1" --> "1" Cifrado : usa
+    HSM "1" --> "*" Auditoria : genera logs
+    Custodio --> "1" Cifrado : valida con

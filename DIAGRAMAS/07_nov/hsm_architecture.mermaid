@@ -1,0 +1,37 @@
+graph TB
+    subgraph "Capa de Presentación"
+        UI[Interfaz de Usuario<br/>- Formulario de custodios<br/>- Selección de operaciones<br/>- Visualización de resultados]
+    end
+    
+    subgraph "Capa de API y Lógica"
+        API[API Interna / Controlador Principal<br/>- Coordina flujos<br/>- Valida peticiones<br/>- Maneja respuestas]
+    end
+    
+    subgraph "Capa de Servicios"
+        AUTH[Módulo de Autenticación<br/>- Valida custodios<br/>- Verifica hashes<br/>- Control de acceso]
+        HSM[Módulo HSM Simulado<br/>- Gestiona Master Key<br/>- Cifrado de llaves<br/>- Descifrado de llaves]
+        CRYPTO[Módulo de Cifrado<br/>- AES-256<br/>- SHA-256<br/>- Generación de claves]
+        AUDIT[Módulo de Auditoría<br/>- Registro de operaciones<br/>- Logs de acceso<br/>- Trazabilidad]
+    end
+    
+    subgraph "Capa de Datos"
+        DB[(Base de Datos Segura<br/>- Llaves cifradas<br/>- Hashes de custodios<br/>- Logs de auditoría)]
+    end
+    
+    UI -->|1. Ingreso de llaves| API
+    API -->|2. Validar custodios| AUTH
+    AUTH -->|3. Verificar hashes| DB
+    API -->|4. Solicitar operación| HSM
+    HSM -->|5. Usar funciones cripto| CRYPTO
+    HSM -->|6. Almacenar/recuperar| DB
+    HSM -->|7. Registrar operación| AUDIT
+    AUDIT -->|8. Guardar log| DB
+    API -->|9. Retornar resultado| UI
+    
+    style UI fill:#e1f5ff
+    style API fill:#fff4e1
+    style AUTH fill:#ffe1f5
+    style HSM fill:#e1ffe1
+    style CRYPTO fill:#f5e1ff
+    style AUDIT fill:#ffe1e1
+    style DB fill:#e1e1e1
