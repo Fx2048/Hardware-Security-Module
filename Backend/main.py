@@ -64,15 +64,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS - Permitir frontend local
+# ==================== CORS - MUY PERMISIVO ====================
+# ⚠️ IMPORTANTE: Esto debe ir ANTES de registrar los routers
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5500",
-        "https://3baeb8c052ec.ngrok-free.app",  # URL  ngrok
-        "https://*.ngrok-free.app"],  
+    allow_origins=["*"],  # ← Permite TODOS los orígenes
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 # Registrar routers
@@ -105,7 +105,7 @@ async def root():
 @app.get("/health", tags=["Health"])
 async def health_check():
     """Health check endpoint"""
-    from .database.connection import get_db
+    from database.connection import get_db
     
     try:
         with get_db() as conn:
