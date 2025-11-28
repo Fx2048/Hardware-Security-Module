@@ -45,7 +45,7 @@ class HSMSimulator:
         self.master_key_manager = MasterKeyManager()
         self.key_store = WorkingKeyStore(self.master_key_manager)
         self.last_activity=None
-        self.session_timeout=2*60
+        self.session_timeout=5*60
     
     def _check_activity(self):
         """Verifica y actualiza actividad - LLAMAR EN CADA MÉTODO"""
