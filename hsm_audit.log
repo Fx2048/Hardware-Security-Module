@@ -1,0 +1,18 @@
+{"timestamp": "2025-11-27T18:01:30.855791", "operation": "HSM_INITIALIZATION", "details": "Master key generated and split into 3 custodian components", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.856784", "operation": "CUSTODIAN_LOAD", "details": "Custodian 'CUSTODIAN-1' loaded successfully", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.856784", "operation": "CUSTODIAN_LOAD", "details": "Custodian 'CUSTODIAN-2' loaded successfully", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.857934", "operation": "CUSTODIAN_LOAD", "details": "Custodian 'CUSTODIAN-3' loaded successfully", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.857934", "operation": "MASTER_KEY_LOAD", "details": "Master key reconstructed from custodian components", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.859872", "operation": "KEY_GENERATION", "details": "Working key 'DATA-KEY-001' generated", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.860872", "operation": "KEY_GENERATION", "details": "Working key 'DATA-KEY-002' generated", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.861872", "operation": "DATA_ENCRYPTION", "details": "Data encrypted with key 'DATA-KEY-001' (size: 45 bytes)", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:30.861872", "operation": "DATA_DECRYPTION", "details": "Data decrypted with key 'DATA-KEY-001' (size: 45 bytes)", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.741713", "operation": "HSM_INITIALIZATION", "details": "Master key generated and split into 3 custodian components", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.743238", "operation": "CUSTODIAN_LOAD", "details": "Custodian 'CUSTODIAN-1' loaded successfully", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.743238", "operation": "CUSTODIAN_LOAD", "details": "Custodian 'CUSTODIAN-2' loaded successfully", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.744377", "operation": "CUSTODIAN_LOAD", "details": "Custodian 'CUSTODIAN-3' loaded successfully", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.744377", "operation": "MASTER_KEY_LOAD", "details": "Master key reconstructed from custodian components", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.746442", "operation": "KEY_GENERATION", "details": "Working key 'DATA-KEY-001' generated", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.746442", "operation": "KEY_GENERATION", "details": "Working key 'DATA-KEY-002' generated", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.747418", "operation": "DATA_ENCRYPTION", "details": "Data encrypted with key 'DATA-KEY-001' (size: 45 bytes)", "success": true, "user_id": "system"}
+{"timestamp": "2025-11-27T18:01:41.747418", "operation": "DATA_DECRYPTION", "details": "Data decrypted with key 'DATA-KEY-001' (size: 45 bytes)", "success": true, "user_id": "system"}
