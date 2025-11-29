@@ -154,11 +154,39 @@
 
     <!-- Contenedor Principal del HSM Simulator -->
     <div id="appContainer" class="container" style="display:none">
-        <!-- Aquí va todo tu HTML original del HSM Simulator -->
-        <!-- Header, Tabs, Cards, etc. -->
-        <!-- Lo dejamos igual que tu código anterior para que nada se rompa -->
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <svg class="icon" style="width:40px;height:40px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                HSM Simulator
+            </h1>
+            <p>Hardware Security Module - Sistema de Gestión de Claves Maestras</p>
+            <div class="status-badge">
+                <div id="statusIndicator" class="status-indicator status-unloaded"></div>
+                <span id="statusText">Master Key No Cargada</span>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notificationArea"></div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('setup')">Configuración</button>
+            <button class="tab" onclick="switchTab('keys')">Claves</button>
+            <button class="tab" onclick="switchTab('encrypt')">Encriptar</button>
+            <button class="tab" onclick="switchTab('decrypt')">Desencriptar</button>
+            <button class="tab" onclick="switchTab('audit')">Auditoría</button>
+        </div>
+
+        <!-- Aquí va todo tu HTML de tabs (setup, keys, encrypt, decrypt, audit) exactamente igual -->
+        <!-- Copia tal cual tu código anterior desde setupTab hasta auditTab -->
+        <!-- Para no repetir todo aquí, asumimos que permanece igual que tu HTML original -->
     </div>
 
+    <!-- Scripts -->
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
