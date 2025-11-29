@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSM Simulator - Landing Page</title>
+    <title>HSM Simulator - Hardware Security Module</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Estilos Landing Page */
+        /* Landing Page Styles */
         body, html {
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .presentation-page {
+        #landingPage {
             position: fixed;
             top: 0; left: 0;
             width: 100%;
@@ -26,67 +26,18 @@
             align-items: center;
             text-align: center;
             padding: 0 20px;
-            overflow-y: auto;
             z-index: 9999;
         }
 
-        .presentation-page h1 {
+        #landingPage h1 {
             font-size: 3em;
             margin-bottom: 20px;
-            letter-spacing: 1px;
-            animation: fadeInDown 1s ease forwards;
         }
 
-        .presentation-page p {
+        #landingPage p {
             font-size: 1.2em;
             max-width: 700px;
-            margin: 0 auto 40px auto;
-            line-height: 1.6;
-            animation: fadeInDown 1s ease 0.3s forwards;
-            opacity: 0;
-        }
-
-        .benefits {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
             margin-bottom: 40px;
-        }
-
-        .benefit-item {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 12px;
-            width: 220px;
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .benefit-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .benefit-item svg {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 15px;
-            fill: #fff;
-        }
-
-        .benefit-item h3 {
-            margin: 10px 0 5px 0;
-            font-size: 1.2em;
-        }
-
-        .benefit-item p {
-            font-size: 0.95em;
         }
 
         .btn-landing {
@@ -105,50 +56,14 @@
             transform: scale(1.05);
             background: #f1f1f1;
         }
-
-        @keyframes fadeInDown {
-            0% { opacity: 0; transform: translateY(-50px);}
-            100% { opacity: 1; transform: translateY(0);}
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .benefits {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
     </style>
 </head>
 <body>
+
     <!-- Landing Page -->
-    <div id="presentationPage" class="presentation-page">
+    <div id="landingPage">
         <h1>HSM Simulator</h1>
-        <p>Bienvenido al simulador profesional de Hardware Security Module. Gestiona tus claves maestras, encripta y desencripta datos y audita tus operaciones de manera segura y confiable.</p>
-
-        <div class="benefits">
-            <div class="benefit-item">
-                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5v10l10 5 10-5V9l-10 5z"/></svg>
-                <h3>Generación de Master Key</h3>
-                <p>Segura, distribuida y confiable, con esquema XOR de componentes de custodios.</p>
-            </div>
-            <div class="benefit-item">
-                <svg viewBox="0 0 24 24"><path d="M12 1a11 11 0 100 22 11 11 0 000-22zm0 20a9 9 0 110-18 9 9 0 010 18z"/></svg>
-                <h3>Claves de Trabajo</h3>
-                <p>Genera claves de uso diario de manera segura y controlada.</p>
-            </div>
-            <div class="benefit-item">
-                <svg viewBox="0 0 24 24"><path d="M12 4v4l3-3-3-3zM4 12h4l-3 3-1-1zM16 12h4l-3 3-1-1zM12 20v-4l3 3-3 3z"/></svg>
-                <h3>Encriptación y Desencriptación</h3>
-                <p>Protege tus datos confidenciales con operaciones de cifrado seguras.</p>
-            </div>
-            <div class="benefit-item">
-                <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm4 0h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2zm0-4h14V3H7v2z"/></svg>
-                <h3>Auditoría Completa</h3>
-                <p>Lleva un registro detallado de todas las operaciones para cumplir normativas.</p>
-            </div>
-        </div>
-
+        <p>Bienvenido al simulador profesional de Hardware Security Module. Gestiona tus claves maestras, encripta y desencripta datos, y audita tus operaciones de manera segura y confiable.</p>
         <button class="btn-landing" onclick="enterApp()">Ingresar al Sistema</button>
     </div>
 
@@ -181,9 +96,155 @@
             <button class="tab" onclick="switchTab('audit')">Auditoría</button>
         </div>
 
-        <!-- Aquí va todo tu HTML de tabs (setup, keys, encrypt, decrypt, audit) exactamente igual -->
-        <!-- Copia tal cual tu código anterior desde setupTab hasta auditTab -->
-        <!-- Para no repetir todo aquí, asumimos que permanece igual que tu HTML original -->
+        <!-- Tab: Setup -->
+        <div id="setupTab" class="tab-content active">
+            <div class="card">
+                <h2>Generación de Master Key</h2>
+                <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">
+                    Genera una master key de 256 bits y divídela en 3 componentes de custodios usando un esquema XOR.
+                </p>
+                <button class="btn btn-primary" onclick="generateMasterKey()">
+                    Generar Master Key y Dividir
+                </button>
+            </div>
+
+            <div id="custodianComponentsCard" style="display:none">
+                <div class="card">
+                    <h3>Componentes de Custodios Generados</h3>
+                    <div class="warning-box">
+                        <p><strong>IMPORTANTE:</strong> Guarde estos componentes de forma segura.</p>
+                        <p>Cada custodio debe mantener su componente en secreto.</p>
+                    </div>
+                    <div id="custodianComponents"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Carga de Componentes de Custodios</h3>
+                <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">
+                    Los 3 custodios deben proporcionar sus componentes para reconstruir la master key.
+                </p>
+                <div id="custodianInputs">
+                    <!-- Custodios 1, 2, 3 (igual que tu código original) -->
+                    <div class="custodian-input-box" id="custodian0">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 1</h4>
+                            <span class="status-loaded-badge" id="status0" style="display:none">✓ Cargado</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component0" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash0" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(0)">Cargar Componente</button>
+                    </div>
+
+                    <div class="custodian-input-box" id="custodian1">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 2</h4>
+                            <span class="status-loaded-badge" id="status1" style="display:none">✓ Cargado</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component1" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash1" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(1)">Cargar Componente</button>
+                    </div>
+
+                    <div class="custodian-input-box" id="custodian2">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 3</h4>
+                            <span class="status-loaded-badge" id="status2" style="display:none">✓ Cargado</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component2" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash2" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(2)">Cargar Componente</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Keys -->
+        <div id="keysTab" class="tab-content">
+            <div class="card">
+                <h2>Generar Clave de Trabajo</h2>
+                <div class="form-group">
+                    <label>ID de la Clave:</label>
+                    <input type="text" id="newKeyId" placeholder="Ej: DATA-KEY-001">
+                </div>
+                <button class="btn btn-success" onclick="generateWorkingKey()">Generar Clave</button>
+            </div>
+            <div class="card">
+                <h3>Claves de Trabajo (<span id="keyCount">0</span>)</h3>
+                <div id="workingKeysContainer"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Encrypt -->
+        <div id="encryptTab" class="tab-content">
+            <div class="card">
+                <h2>Encriptar Datos</h2>
+                <div class="form-group">
+                    <label>Seleccionar Clave:</label>
+                    <select id="encryptKeySelect">
+                        <option value="">-- Seleccione una clave --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Datos a Encriptar:</label>
+                    <textarea id="plaintextInput" placeholder="Ingrese el texto que desea encriptar..."></textarea>
+                </div>
+                <button class="btn btn-warning" onclick="encryptData()">Encriptar Datos</button>
+            </div>
+            <div id="encryptedResultCard" style="display:none">
+                <div class="card">
+                    <h3>Resultado Encriptado</h3>
+                    <div class="code-box green" id="encryptedOutput"></div>
+                    <button class="btn btn-primary btn-sm" onclick="copyToClipboard('encryptedOutput')">
+                        Copiar al Portapapeles
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Decrypt -->
+        <div id="decryptTab" class="tab-content">
+            <div class="card">
+                <h2>Desencriptar Datos</h2>
+                <div class="form-group">
+                    <label>Datos Encriptados (JSON):</label>
+                    <textarea id="encryptedInput" placeholder="Pegue el JSON con los datos encriptados aquí..."></textarea>
+                </div>
+                <button class="btn btn-danger" onclick="decryptData()">Desencriptar Datos</button>
+            </div>
+            <div id="decryptedResultCard" style="display:none">
+                <div class="card">
+                    <h3>Resultado Desencriptado</h3>
+                    <div class="code-box cyan" id="decryptedOutput"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Audit -->
+        <div id="auditTab" class="tab-content">
+            <div class="card">
+                <h2>Registro de Auditoría</h2>
+                <div id="auditLogContainer"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -193,7 +254,7 @@
 
     <script>
         function enterApp() {
-            document.getElementById('presentationPage').style.display = 'none';
+            document.getElementById('landingPage').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
         }
     </script>
