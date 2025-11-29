@@ -7,7 +7,23 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container">
+    <!-- Página de Presentación -->
+    <div id="presentationPage" class="presentation-page">
+        <div class="presentation-content">
+            <h1>Bienvenido a HSM Simulator</h1>
+            <p>Gestiona tus claves de forma segura y profesional con nuestro módulo de seguridad de hardware.</p>
+            <ul>
+                <li>Generación y gestión de Master Keys</li>
+                <li>Claves de trabajo seguras</li>
+                <li>Encriptación y desencriptación de datos</li>
+                <li>Auditoría completa de operaciones</li>
+            </ul>
+            <button class="btn btn-primary" onclick="enterApp()">Ingresar al Sistema</button>
+        </div>
+    </div>
+
+    <!-- Contenedor principal del HSM Simulator -->
+    <div id="appContainer" class="container" style="display:none">
         <!-- Header -->
         <div class="header">
             <h1>
@@ -64,7 +80,7 @@
                     Los 3 custodios deben proporcionar sus componentes para reconstruir la master key.
                 </p>
                 <div id="custodianInputs">
-                    <!-- Custodian 1 -->
+                    <!-- Custodio 1 -->
                     <div class="custodian-input-box" id="custodian0">
                         <div class="custodian-input-header">
                             <h4>Custodio 1</h4>
@@ -81,7 +97,7 @@
                         <button class="btn btn-success btn-sm" onclick="loadCustodian(0)">Cargar Componente</button>
                     </div>
 
-                    <!-- Custodian 2 -->
+                    <!-- Custodio 2 -->
                     <div class="custodian-input-box" id="custodian1">
                         <div class="custodian-input-header">
                             <h4>Custodio 2</h4>
@@ -98,7 +114,7 @@
                         <button class="btn btn-success btn-sm" onclick="loadCustodian(1)">Cargar Componente</button>
                     </div>
 
-                    <!-- Custodian 3 -->
+                    <!-- Custodio 3 -->
                     <div class="custodian-input-box" id="custodian2">
                         <div class="custodian-input-header">
                             <h4>Custodio 3</h4>
@@ -192,5 +208,14 @@
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Script para la presentación -->
+    <script>
+        function enterApp() {
+            document.getElementById('presentationPage').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
+
