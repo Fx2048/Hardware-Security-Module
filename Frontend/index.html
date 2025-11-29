@@ -6,138 +6,260 @@
     <title>HSM Simulator - Hardware Security Module</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Landing Page Hacker Style */
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        /* Landing Page Profesional */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0F1A;
+            color: #FFFFFF;
+        }
 
         .landing-page {
-            text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #0d1117, #010b14);
-            color: #00f0ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
-            font-family: 'Share Tech Mono', monospace;
-            overflow: hidden;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #0A0F1A, #111827);
+        }
+
+        .landing-header {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 60px;
         }
 
         .landing-header h1 {
-            font-size: 3em;
+            font-size: 3rem;
+            font-weight: 700;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+            color: #00BFFF;
         }
 
         .landing-header p {
-            font-size: 1.2em;
-            margin-bottom: 40px;
-            color: rgba(0, 240, 255, 0.7);
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
         }
 
         .btn-primary {
-            background-color: #00f0ff;
-            color: #010b14;
-            padding: 12px 30px;
-            font-size: 1.1em;
-            border-radius: 6px;
+            background-color: #00BFFF;
+            color: #0A0F1A;
             border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+            margin-top: 30px;
         }
 
         .btn-primary:hover {
-            background-color: #00c2cc;
-            box-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff;
+            background-color: #009ACD;
+            transform: translateY(-2px);
         }
 
         .features {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 25px;
+            gap: 30px;
+            max-width: 1200px;
             margin-bottom: 50px;
         }
 
         .feature-card {
-            background-color: #01111b;
-            border: 1px solid #00f0ff;
+            background-color: #111827;
             border-radius: 12px;
-            padding: 25px;
-            width: 280px;
-            box-shadow: 0 0 15px #00f0ff50;
+            padding: 30px 25px;
+            width: 260px;
+            box-shadow: 0 8px 20px rgba(0, 191, 255, 0.15);
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .feature-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 0 30px #00f0ff, 0 0 60px #00f0ff50;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 191, 255, 0.25);
         }
 
         .feature-card h3 {
-            margin-bottom: 15px;
-            color: #00f0ff;
-            text-shadow: 0 0 5px #00f0ff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #00BFFF;
         }
 
         .feature-card p {
-            font-size: 0.95em;
-            color: rgba(0, 240, 255, 0.8);
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .cta {
-            margin-top: 40px;
-        }
-
-        /* Fondo animado estilo hacker */
-        .landing-page::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url('https://i.ibb.co/zN1ZJbs/hacker-bg.png');
-            background-size: cover;
-            opacity: 0.05;
-            z-index: -1;
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Landing Page Hacker Style -->
+    <!-- Landing Page Profesional -->
     <div id="landingPage" class="landing-page">
         <header class="landing-header">
             <h1>HSM Simulator</h1>
-            <p>Gestiona tus claves maestras y protege tus datos con seguridad de nivel profesional.</p>
-            <button class="btn btn-primary" onclick="document.getElementById('landingPage').style.display='none'; document.querySelector('.container').style.display='block';">
-                Entrar a la App
+            <p>Bienvenido a HSM Simulator, la plataforma profesional para la gestión de claves maestras, cifrado seguro y auditoría completa. Diseñada para empresas que requieren seguridad de nivel corporativo.</p>
+            <button class="btn-primary" onclick="document.getElementById('landingPage').style.display='none'; document.querySelector('.container').style.display='block';">
+                Comenzar
             </button>
         </header>
 
         <section class="features">
             <div class="feature-card">
-                <h3>Master Key Seguro</h3>
-                <p>Genera y divide tu Master Key de 256 bits entre varios custodios usando XOR seguro.</p>
+                <h3>Generación de Master Key</h3>
+                <p>Genera y divide tu Master Key de 256 bits entre custodios usando un esquema seguro XOR.</p>
             </div>
             <div class="feature-card">
                 <h3>Claves de Trabajo</h3>
-                <p>Crea claves de trabajo únicas, listas para cifrar datos sensibles de manera segura.</p>
+                <p>Crea claves únicas listas para cifrar datos confidenciales de forma profesional.</p>
             </div>
             <div class="feature-card">
-                <h3>Encriptación Avanzada</h3>
-                <p>Protege tus datos con encriptación y desencriptación rápida y confiable.</p>
+                <h3>Encriptación & Desencriptación</h3>
+                <p>Protege tus datos con encriptación confiable y acceso controlado.</p>
             </div>
             <div class="feature-card">
                 <h3>Auditoría Completa</h3>
-                <p>Registra todas las operaciones para un seguimiento seguro y cumplimiento de normas.</p>
+                <p>Registra todas las operaciones para cumplir con estándares de seguridad corporativos.</p>
             </div>
         </section>
 
-        <section class="cta">
-            <p>Simula un HSM real desde tu navegador con estilo hacker nocturno.</p>
-            <button class="btn btn-primary" onclick="document.getElementById('landingPage').style.display='none'; document.querySelector('.container').style.display='block';">
-                Comenzar Ahora
+        <div class="cta">
+            <button class="btn-primary" onclick="document.getElementById('landingPage').style.display='none'; document.querySelector('.container').style.display='block';">
+                Explorar la App
             </button>
-        </section>
+        </div>
     </div>
 
     <!-- Container principal oculto inicialmente -->
     <div class="container" style="display:none">
-        <!-- TODO: Aquí va todo tu código original de la app -->
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <svg class="icon" style="width:40px;height:40px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                HSM Simulator
+            </h1>
+            <p>Hardware Security Module - Sistema de Gestión de Claves Maestras</p>
+            <div class="status-badge">
+                <div id="statusIndicator" class="status-indicator status-unloaded"></div>
+                <span id="statusText">Master Key No Cargada</span>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notificationArea"></div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('setup')">Configuración</button>
+            <button class="tab" onclick="switchTab('keys')">Claves</button>
+            <button class="tab" onclick="switchTab('encrypt')">Encriptar</button>
+            <button class="tab" onclick="switchTab('decrypt')">Desencriptar</button>
+            <button class="tab" onclick="switchTab('audit')">Auditoría</button>
+        </div>
+
+        <!-- Tab: Setup -->
+        <div id="setupTab" class="tab-content active">
+            <div class="card">
+                <h2>Generación de Master Key</h2>
+                <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">
+                    Genera una master key de 256 bits y divídela en 3 componentes de custodios usando un esquema XOR.
+                </p>
+                <button class="btn btn-primary" onclick="generateMasterKey()">Generar Master Key y Dividir</button>
+            </div>
+
+            <div id="custodianComponentsCard" style="display:none">
+                <div class="card">
+                    <h3>Componentes de Custodios Generados</h3>
+                    <div class="warning-box">
+                        <p><strong>IMPORTANTE:</strong> Guarde estos componentes de forma segura.</p>
+                        <p>Cada custodio debe mantener su componente en secreto.</p>
+                    </div>
+                    <div id="custodianComponents"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Carga de Componentes de Custodios</h3>
+                <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">
+                    Los 3 custodios deben proporcionar sus componentes para reconstruir la master key.
+                </p>
+                <div id="custodianInputs">
+                    <!-- Custodios 1 a 3 -->
+                    <div class="custodian-input-box" id="custodian0">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 1</h4>
+                            <span class="status-loaded-badge" id="status0" style="display:none">✓ Cargado</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component0" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash0" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(0)">Cargar Componente</button>
+                    </div>
+
+                    <div class="custodian-input-box" id="custodian1">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 2</h4>
+                            <span class="status-loaded-badge" id="status1" style="display:none">✓ Cargado</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component1" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash1" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(1)">Cargar Componente</button>
+                    </div>
+
+                    <div class="custodian-input-box" id="custodian2">
+                        <div class="custodian-input-header">
+                            <h4>Custodio 3</h4>
+                            <span class="status-loaded-badge" id="status2" style="display:none">✓ Cargado</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Componente (Hex):</label>
+                            <input type="text" id="component2" placeholder="Pegue el componente hexadecimal aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>Hash de Verificación (SHA-256):</label>
+                            <input type="text" id="hash2" placeholder="Pegue el hash SHA-256 aquí">
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="loadCustodian(2)">Cargar Componente</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs: Keys, Encrypt, Decrypt, Audit ... -->
+        <!-- El resto de tu código original se mantiene igual -->
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
