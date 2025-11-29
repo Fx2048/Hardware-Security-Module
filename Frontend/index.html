@@ -5,123 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSM Simulator - Hardware Security Module</title>
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        /* Landing Page Styles */
-        .landing-page {
-            text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #1f1f1f, #2d2d2d);
-            color: #fff;
-            min-height: 100vh;
-        }
-
-        .landing-header h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-
-        .landing-header p {
-            font-size: 1.2em;
-            margin-bottom: 40px;
-            color: rgba(255,255,255,0.8);
-        }
-
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 50px;
-        }
-
-        .feature-card {
-            background-color: #333;
-            border-radius: 12px;
-            padding: 20px;
-            width: 250px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-        }
-
-        .feature-card h3 {
-            margin-bottom: 15px;
-            color: #00caff;
-        }
-
-        .feature-card p {
-            font-size: 0.95em;
-            color: rgba(255,255,255,0.9);
-        }
-
-        .cta {
-            margin-top: 40px;
-        }
-
-        .btn {
-            padding: 10px 25px;
-            font-size: 1em;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-primary {
-            background-color: #00caff;
-            color: #111;
-        }
-
-        .btn-primary:hover {
-            background-color: #00a3cc;
-        }
-    </style>
 </head>
 <body>
-
-    <!-- Landing Page -->
-    <div id="landingPage" class="landing-page">
-        <header class="landing-header">
-            <h1>Bienvenido a HSM Simulator</h1>
-            <p>Explora la gestión de claves maestras, encriptación segura y auditoría de datos en un entorno seguro y fácil de usar.</p>
-            <button class="btn btn-primary" onclick="document.getElementById('landingPage').style.display='none'; document.querySelector('.container').style.display='block';">
-                Explorar la App
-            </button>
-        </header>
-
-        <section class="features">
-            <div class="feature-card">
-                <h3>Generación de Master Key</h3>
-                <p>Genera y divide tu Master Key de 256 bits entre varios custodios usando un esquema XOR seguro.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Gestión de Claves de Trabajo</h3>
-                <p>Crea claves de trabajo únicas, seguras y listas para encriptar tus datos sensibles.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Encriptación y Desencriptación</h3>
-                <p>Protege tus datos confidenciales con un proceso de encriptado y desencriptado fácil de usar.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Auditoría de Operaciones</h3>
-                <p>Registra cada acción de forma segura para cumplir con estándares de auditoría y seguimiento.</p>
-            </div>
-        </section>
-
-        <section class="cta">
-            <p>Todo lo que necesitas para simular un HSM real, directamente en tu navegador.</p>
-            <button class="btn btn-primary" onclick="document.getElementById('landingPage').style.display='none'; document.querySelector('.container').style.display='block';">
-                Comenzar Ahora
-            </button>
-        </section>
-    </div>
-
-    <!-- Container principal oculto inicialmente -->
-    <div class="container" style="display:none">
+    <div class="container">
         <!-- Header -->
         <div class="header">
             <h1>
@@ -176,7 +62,7 @@
                     Los 3 custodios deben proporcionar sus componentes para reconstruir la master key.
                 </p>
                 <div id="custodianInputs">
-                    <!-- Custodios 1 a 3 -->
+                    <!-- Custodian 1 -->
                     <div class="custodian-input-box" id="custodian0">
                         <div class="custodian-input-header">
                             <h4>Custodio 1</h4>
@@ -193,6 +79,7 @@
                         <button class="btn btn-success btn-sm" onclick="loadCustodian(0)">Cargar Componente</button>
                     </div>
 
+                    <!-- Custodian 2 -->
                     <div class="custodian-input-box" id="custodian1">
                         <div class="custodian-input-header">
                             <h4>Custodio 2</h4>
@@ -209,6 +96,7 @@
                         <button class="btn btn-success btn-sm" onclick="loadCustodian(1)">Cargar Componente</button>
                     </div>
 
+                    <!-- Custodian 3 -->
                     <div class="custodian-input-box" id="custodian2">
                         <div class="custodian-input-header">
                             <h4>Custodio 3</h4>
@@ -302,3 +190,4 @@
     <script src="js/app.js"></script>
 </body>
 </html>
+
